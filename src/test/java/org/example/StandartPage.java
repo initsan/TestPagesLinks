@@ -7,7 +7,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 
-public class StandarPage {
+public class StandartPage {
 
     private int pageNumber;
     private boolean hasLink;
@@ -16,33 +16,36 @@ public class StandarPage {
     @FindBy(tagName = "a")
     private WebElement link;
 
-    protected StandarPage(ChromeDriver driver) {
+    @FindBy(xpath = "//*[contains(text(), 'последняя')]")
+    private WebElement last;
+
+    protected StandartPage(ChromeDriver driver) {
         var locator = new DefaultElementLocatorFactory(driver);
         PageFactory.initElements(locator, this);
-    }
-
-    public boolean containsLink(){
-        try {
-            return link.getAttribute("href").contains("http:");
-        } catch (NoSuchElementException nsee) {
-            return false;
-        }
     }
 
     public boolean isLast() {
         return isLast;
     }
 
-    public void setLast(boolean last) {
-        isLast = last;
+    public void setLast() {
+        try {
+            isLast = last.getText().contains("последняя");
+        } catch (NoSuchElementException nsee) {
+            isLast = false;
+        }
     }
 
     public boolean hasLink() {
         return hasLink;
     }
 
-    public void setHasLink(boolean hasLink) {
-        this.hasLink = hasLink;
+    public void setHasLink() {
+        try {
+            hasLink = link.getAttribute("href").contains(".html");
+        } catch (NoSuchElementException nsee) {
+            hasLink = false;
+        }
     }
 
     public void setPageNumber(int pageNumber) {
@@ -51,11 +54,12 @@ public class StandarPage {
 
     @Override
     public String toString() {
-        return "StandarPage{" +
-                "pageNumber=" + pageNumber +
+        String page = "Page " + pageNumber +
                 ", hasLink=" + hasLink +
-                ", isLast=" + isLast +
-                ", link=" + link +
-                '}';
+                ", isLast=" + isLast;
+        if (this.hasLink) {
+            page = ", link=" + page + link.getAttribute("href");
+        }
+        return page;
     }
 }

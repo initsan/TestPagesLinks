@@ -3,9 +3,6 @@ package org.example;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.ArrayList;
@@ -29,36 +26,28 @@ public class TestPages {
     }
 
     @Test
-    public void testpagesLinks () {
+    public void testPagesLinks() {
         openStartPage();
-        List<StandarPage> pages = goThroughAllPages();
+        List<StandartPage> pages = goThroughAllPages();
         printPagesWithoutLinks(pages);
     }
 
-    private void printPagesWithoutLinks(List<StandarPage> list) {
-        List<StandarPage> resultCollection = list.stream().filter(page -> !page.hasLink()).collect(Collectors.toList());
+    private void printPagesWithoutLinks(List<StandartPage> list) {
+        List<StandartPage> resultCollection = list.stream().filter(page -> !page.hasLink()).collect(Collectors.toList());
         System.out.println("Pages without links:");
         resultCollection.forEach(System.out::println);
     }
 
-    private List<StandarPage> goThroughAllPages() {
-        List<StandarPage> allList = new ArrayList<>();
+    private List<StandartPage> goThroughAllPages() {
+        List<StandartPage> allList = new ArrayList<>();
         int numPage = 0;
         while (!listContainsLastPage(allList)){
-            StandarPage currentPage = new StandarPage(driver);
+            StandartPage currentPage = new StandartPage(driver);
             currentPage.setPageNumber(numPage);
-            currentPage.setHasLink(currentPage.containsLink());
+            currentPage.setHasLink();
             allList.add(currentPage);
             if (!currentPage.hasLink()) {
-                WebElement lastElement;
-                try {
-                    lastElement = driver.findElement(By.xpath("//*[contains(text(), 'последняя')]"));
-                } catch (NoSuchElementException nsee) {
-                    lastElement = null;
-                }
-                if (lastElement != null) {
-                    currentPage.setLast(true);
-                }
+                currentPage.setLast();
             }
             numPage++;
             String nextUrl = baseUrl + numPage + ".html";
@@ -67,8 +56,8 @@ public class TestPages {
         return allList;
     }
 
-    private boolean listContainsLastPage(List<StandarPage> allList) {
-        return allList.stream().anyMatch(StandarPage::isLast);
+    private boolean listContainsLastPage(List<StandartPage> allList) {
+        return allList.stream().anyMatch(StandartPage::isLast);
     }
 
     private void openStartPage() {
