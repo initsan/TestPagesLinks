@@ -43,7 +43,7 @@ public class TestPages {
 
     private List<StandarPage> goThroughAllPages() {
         List<StandarPage> allList = new ArrayList<>();
-        int numPage = 8540;
+        int numPage = 0;
         while (!listContainsLastPage(allList)){
             StandarPage currentPage = new StandarPage(driver);
             currentPage.setPageNumber(numPage);
